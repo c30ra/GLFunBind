@@ -1,0 +1,12 @@
+syntax: glob
+
+##########
+# directory
+##########
+build
+src/GLHeaderGen/resource
+###############
+#Qt Creator generated
+###############
+*.pro.user
+
