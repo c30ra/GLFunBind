@@ -10,3 +10,4 @@ src/GLHeaderGen/resource
 ###############
 *.pro.user
 
+TODOS.txt

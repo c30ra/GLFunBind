@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gltree.h"
 #include "glheadergen_types.h"
 
+class QTextStream;
 namespace GLHeaderGen
 {
   class Parser : public QObject
@@ -45,12 +46,15 @@ namespace GLHeaderGen
     ~Parser();
 
     void setUseEnumClass(bool useEnumClass);
+    void setUseDefines(bool useDefines);
 
   public slots:
     //  void read(QIODevice *device);
     void read(const char *buffer);//dom version
-  private:
+
+  private://options
     bool m_useEnumClass;
+    bool m_useDefines;
 
   private:
     void processGroups(tinyxml2::XMLElement *element);
@@ -60,10 +64,11 @@ namespace GLHeaderGen
     void resolveData(tinyxml2::XMLElement *feature);
 
     void outputEnumUndefs();
-    void outputEnumsHeader();
-    void outputEnumsClassHeader();
-    void outputFunctionsHeader();
-    void outputBindingsHeader();
+    void outputEnumsHeaders();
+    void outputEnumsClassHeaders();
+    void outputFunctionsHeaders();
+    void outputGLHeaders();
+    void outputBindingsHeaders();
 
   private:
     GLHeaderGen::GLTree<BaseGL> glTree;

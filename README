@@ -1,11 +1,17 @@
 #####################
-    GLFunBind v1.0
+    GLFunBind v1.1
 #####################
 
 
 GLFunBind is a header only, easy to use library made to make simple and safe 
 use OpenGL.
 
+#####################
+UPDATES
+#####################
+- added otpion to output enums as defines and not as "static const GLenum"
+- now gl_veriosn_profile.h headers are generated. This helper headers can be
+  used to avoid inclusion of function, enums and types headers.
 
 #####################
 BUILDINBG
