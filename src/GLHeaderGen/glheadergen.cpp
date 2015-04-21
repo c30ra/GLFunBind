@@ -636,7 +636,7 @@ void Parser::outputEnumsHeaders()
               m_enumsOut << "#include \"types.h\"" << endl;
               m_enumsOut << "\n";
 
-              if(m_useDefines)
+              if(!m_useDefines)
                 {
                   m_enumsOut << "namespace gl" << endl;
                   m_enumsOut << '{';
@@ -660,7 +660,7 @@ void Parser::outputEnumsHeaders()
                     }
 
                 }
-              if(m_useDefines)
+              if(!m_useDefines)
                 m_enumsOut << "} //End of namespace gl" << endl;
 
               m_enumsOut << "#endif" << endl;
@@ -848,7 +848,7 @@ void Parser::outputFunctionsHeaders()
                     }
                 }
               functionOut << "}" << endl;
-              functionOut << "#endif //FUNCTIONS_" + versionValue + "_" + profileStr
+              functionOut << "#endif //FUNCTIONS_" + versionValue + profileStr
                           << endl;
               file.close();
             }
