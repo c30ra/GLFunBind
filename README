@@ -56,8 +56,8 @@ Include tree:
 
 include
     |_gl/
-      |_enums_GL_VERSIO_n_n_profile.h
-      |_functions_GL_VERSIO_n_n_profile.h
+      |_enums_GL_VERSION_n_n_profile.h
+      |_functions_GL_VERSION_n_n_profile.h
     |_enum_undefs.h
     |_binds.h
     |_function.h

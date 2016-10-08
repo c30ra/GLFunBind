@@ -474,9 +474,8 @@ void Parser::resolveData(tinyxml2::XMLElement *feature)
                     {
                       if(commandName == item->name())
                         {
-
-                            commandListCompatibility.insert(item->name(), item);
-                            commandListCore.insert(item->name(), item);
+                            commandListCompatibility.replace(item->name(), item);
+                            commandListCore.replace(item->name(), item);
                         }
                     }
                 }
@@ -600,7 +599,7 @@ void Parser::outputEnumsHeaders()
   QDir outputDirectory{QDir::current()};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
-      qFatal("Colud not create directory:");
+      qFatal("Could not create directory:");
 
   for(auto &api : glTree.nodes()) //API
     {
@@ -614,7 +613,7 @@ void Parser::outputEnumsHeaders()
               auto dirName = dir + "/" + apiValue ;
               if(!outputDirectory.mkdir(dirName))
                 if(!outputDirectory.exists(dirName))
-                  qFatal("Colud not create directory: ");
+                  qFatal("Could not create directory: ");
 
               auto profileStr = profileValue.isEmpty() ? "" : '_' + profileValue;
               auto fileName = dir + '/' + apiValue + '/' + filePrefix + "_"
