@@ -75,7 +75,7 @@ Parser::~Parser()
 void Parser::read(const char *buffer)
 {
   tinyxml2::XMLDocument document;
-  if(document.Parse(buffer) != tinyxml2::XML_NO_ERROR)
+  if(document.Parse(buffer) != tinyxml2::XMLError::XML_SUCCESS)
     qFatal("Error opening the file: ", document.GetErrorStr1());
 
 

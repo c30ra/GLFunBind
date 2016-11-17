@@ -1,6 +1,6 @@
 /*******************************************************************************
 GLFunBind type safe header only OpenGL function binder.
-Copyright (C) 2015  Luca Carella
+Copyright (C) 2016  Luca Carella
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ void showHelp()
       "\t-use-defines: output enumrator as defines \n\t\t"
       "instead of \"static const\"(default: off)\n"
       "\t-license: show license notice\n"
-      "\t-abouts: show software information"
+      "\t-abouts: show software information\n"
       "\t-help: show this help.\n";
   qDebug() << help;
 
