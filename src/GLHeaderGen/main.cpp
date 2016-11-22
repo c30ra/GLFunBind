@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     showAbouts();
     return a.exit();
   }
-  
+
   if(args.isEmpty()){
     std::cout << "error: No input file provided..." << '\n';
     return a.exit();
@@ -101,16 +101,20 @@ int main(int argc, char *argv[])
   }
 
   auto useDefines = clParser.isSet("use-defines");
-  // Parser parser;
-  // parser.setUseEnumClass(false);
-  //
-  // QFile file;
-  // file.set
-  // auto buffer = file.readAll();
-  // file.close();
-  //
-  // parser.read(buffer);
-  // parser.write()
+
+  Parser parser;
+  parser.setUseEnumClass(false);
+
+  QFile file(source);
+  if(!file.open(QFile::ReadOnly)){
+    std::cout << file.errorString().toStdString() << '\n';
+    return a.exit();
+  }
+  auto buffer = file.readAll();
+  file.close();
+
+  parser.read(buffer);
+  parser.write(destDir);
 
   return a.exit();
 }
