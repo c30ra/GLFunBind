@@ -18,7 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 //Qt
 #include <QCoreApplication>
+#include <QCommandLineParser>
 #include <QFile>
+#include <QDebug>
 
 //GLHeaderGen
 #include "glheadergen.h"
@@ -27,25 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 using namespace GLHeaderGen;
 
-void showHelp()
-{
-  static const auto help =
-      "Usage: GLHeaderGen fileinput -[options]\n\n"
-      "Options:\n"
-      "\t-use-defines: output enumrator as defines \n\t\t"
-      "instead of \"static const\"(default: off)\n"
-      "\t-license: show license notice\n"
-      "\t-abouts: show software information\n"
-      "\t-help: show this help.\n";
-  std::cout << help << '\n';
-
-}
-
 void showLicense()
 {
   static const auto smallLicense =
       "GLHeaderGen type safe header only OpenGL function binder.\n"
-      "Copyright (C) 2015  Luca Carella\n\n"
+      "Copyright (C) 2016  Luca Carella\n\n"
 
       "This program is free software: you can redistribute it and/or modify\n"
       "it under the terms of the GNU General Public License as published by\n"
@@ -64,69 +52,65 @@ void showLicense()
 
 void showAbouts()
 {
-  static const auto abouts = "This software make use of TinyXML2 and Qt5.4\n";
+  static const auto abouts = "This software make use of TinyXML2 and Qt5.7\n";
   std::cout << abouts << '\n';
 }
 
 int main(int argc, char *argv[])
 {
-  QCoreApplication a(argc, argv);
-
+ QCoreApplication a(argc, argv);
   std::cout << "GLHeaderGen Copyright (C) 2015  Luca Carella\n\n"
               "This program comes with ABSOLUTELY NO WARRANTY.\n"
               "This is free software, and you are welcome to redistribute it\n"
-              "under certain conditions; for details type `-license'.\n\n" 
-			  << '\n';
+              "under certain conditions; for details type `--license'.\n\n"
+                          << '\n';
 
-  Parser parser;
-  parser.setUseEnumClass(false);
+  QCommandLineParser clParser;
+  clParser.addHelpOption();
+  clParser.addPositionalArgument("source", "Input file to parse");
+  clParser.addPositionalArgument("destination", QString("Optional output directory, default: %1").arg(QDir::currentPath()));
+  clParser.addOptions({{"use-defines", "Output enumrator as defines, instead of \"static const\"(default: off)"},
+                      {"license","Show license notice"},
+                      {"abouts", "Show software information"}});
+  clParser.process(a);
 
-  QFile file;
-  auto wrongCommands = true;
+  auto args = clParser.positionalArguments();
 
-  for(auto i = 0; i != argc; ++i)
-    {
-      if(strcmp("-help", argv[i]) == 0)
-        {
-          showHelp();
-          return 0;
-        }
-      else if(strcmp("-abouts", argv[i]) == 0)
-        {
-          showAbouts();
-          return 0;
-        }
-      else if(strcmp("-license", argv[i]) == 0)
-        {
-          showLicense();
-          return 0;
-        }
-      else if(strcmp("-use-defines", argv[i]) == 0)
-        {
-          parser.setUseDefines(true);
-        }
-      else if(QString(argv[i]).contains(".xml"))
-        {
+  if(clParser.isSet("license")) {
+    showLicense();
+    return a.exit();
+  }
+  else if(clParser.isSet("abouts")){
+    showAbouts();
+    return a.exit();
+  }
+  
+  if(args.isEmpty()){
+    std::cout << "error: No input file provided..." << '\n';
+    return a.exit();
+  }
+  if(args.length() > 2){
+    std::cout << "error: invalid argument options" << '\n';
+    return a.exit();
+  }
+  auto source = args.first();
+  auto destDir = QDir::currentPath();
 
-          file.setFileName(argv[i]);
-          if (!file.open(QFile::ReadOnly | QFile::Text))
-            qCritical() << "Error opening the file";
+  if(args.length() == 2){
+      destDir = args.last();
+  }
 
-          wrongCommands = false;
-        }
-    }
+  auto useDefines = clParser.isSet("use-defines");
+  // Parser parser;
+  // parser.setUseEnumClass(false);
+  //
+  // QFile file;
+  // file.set
+  // auto buffer = file.readAll();
+  // file.close();
+  //
+  // parser.read(buffer);
+  // parser.write()
 
-  if(wrongCommands)
-    {
-      std::cout << "Invalid argument..." << '\n';
-      showHelp();
-      return 0;
-    }
-
-  auto buffer = file.readAll();
-  file.close();
-
-  parser.read(buffer);
-
-  return 0;
+  return a.exit();
 }

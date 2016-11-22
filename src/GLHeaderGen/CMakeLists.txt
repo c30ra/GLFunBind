@@ -5,14 +5,14 @@ project(GLHeaderGen)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS core REQUIRED)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 
 find_package(TinyXML2 REQUIRED)
 include_directories(${TINYXML2_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${TINYXML2_LIBRARIES} Qt5::Core)
 
-MESSAGE( STATUS "CMAKE_INCLUDE_PATH: " ${TINYXML2_INCLUDE_DIRS} )
-MESSAGE( STATUS "CMAKE_LIBRARY_PATH: " ${LIBS} )
-
-add_executable(GLHeaderGen WIN32 main.cpp glheadergen.cpp)
+add_executable(GLHeaderGen main.cpp glheadergen.cpp)
 target_link_libraries(GLHeaderGen ${LIBS})
+
+install(TARGETS GLHeaderGen
+		RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin) 

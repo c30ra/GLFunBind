@@ -58,7 +58,9 @@ static const QString license
   "*************************************************************************/\n"
 };
 
-static const QString tab = "  ";
+static const QString tab{"  "};
+
+static const QString FILE_EXT{".h"};
 
 Parser::Parser(QObject *parent)
   : QObject(parent),
@@ -95,28 +97,35 @@ void Parser::read(const char *buffer)
   element = document.FirstChildElement()->FirstChildElement(featureTag);
   resolveData(element);
 
-  qDebug() << "Writing enums header..";
-  if(!m_useEnumClass)
-    outputEnumsHeaders();
-  else
-    outputEnumsClassHeaders();
-
-  qDebug() << "Writing functions header..";
-  outputFunctionsHeaders();
-
-  qDebug() << "Writing gl header..";
-  outputGLHeaders();
-
-  qDebug() << "Writing binds.h ..";
-  outputBindingsHeaders();
-
-  qDebug() << "Writing enum_undefs.h ..";
-  outputEnumUndefs();
-
-  qDebug() << "Done!";
-
 }
 
+void Parser::write(const QString &where)
+{
+  QDir outputDirectory{QDir::current()};
+  if(!outputDirectory.mkdir(where))
+    if(!outputDirectory.exists(where))
+      qFatal("Colud not create directory:");
+
+  qDebug() << "Writing enums header..";
+  if(!m_useEnumClass)
+    outputEnumsHeaders(where);
+  else
+    outputEnumsClassHeaders(where);
+
+  qDebug() << "Writing functions header..";
+  outputFunctionsHeaders(where);
+
+  qDebug() << "Writing gl header..";
+  outputGLHeaders(where);
+
+  qDebug() << "Writing binds.h ..";
+  outputBindingsHeaders(where);
+
+  qDebug() << "Writing enum_undefs.h ..";
+  outputEnumUndefs(where);
+
+  qDebug() << "Done!";
+}
 void Parser::setUseEnumClass(bool useEnumClass)
 {
   m_useEnumClass = useEnumClass;
@@ -304,7 +313,7 @@ void Parser::processCommands(tinyxml2::XMLElement *element)
 
       while(paramChild != nullptr)
         {
-          Function::Param functionParam;         
+          Function::Param functionParam;
           auto paramTypeChild = paramChild->FirstChild();
           auto paramType = QString{};
           while(paramTypeChild)
@@ -542,13 +551,12 @@ void Parser::resolveData(tinyxml2::XMLElement *feature)
     }
 }
 
-void Parser::outputEnumUndefs()
+void Parser::outputEnumUndefs(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"enum_undefs"};
-  static const QString fileExt {".h"};
   //  auto childs = glTree.childNodes();
-  QDir outputDirectory{QDir::current()};
+  QDir outputDirectory{where};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
       qFatal("Colud not create directory:");
@@ -558,7 +566,7 @@ void Parser::outputEnumUndefs()
     if(!outputDirectory.exists(dirName))
       qFatal("Colud not create directory: ");
 
-  auto fileName = dir + '/' + filePrefix + fileExt;
+  auto fileName = dir + '/' + filePrefix + FILE_EXT;
 
   QFile file(fileName);
   if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))
@@ -585,18 +593,16 @@ void Parser::outputEnumUndefs()
   file.close();
 }
 
-void Parser::outputEnumsHeaders()
+void Parser::outputEnumsHeaders(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"enums"};
-  static const QString fileExt {".h"};
-
   static const QString enumeratorType =
       m_useDefines ? "#define %1 %2" :
                      tab + tab + "static const GLenum %1 = %2";
 
   //  auto childs = glTree.childNodes();
-  QDir outputDirectory{QDir::current()};
+  QDir outputDirectory{where};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
       qFatal("Could not create directory:");
@@ -617,7 +623,7 @@ void Parser::outputEnumsHeaders()
 
               auto profileStr = profileValue.isEmpty() ? "" : '_' + profileValue;
               auto fileName = dir + '/' + apiValue + '/' + filePrefix + "_"
-                  + versionValue + profileStr + fileExt;
+                  + versionValue + profileStr + FILE_EXT;
 
               QFile file(fileName);
               if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))
@@ -669,13 +675,12 @@ void Parser::outputEnumsHeaders()
     }
 }
 
-void Parser::outputEnumsClassHeaders()
+void Parser::outputEnumsClassHeaders(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"enums"};
-  static const QString fileExt {".h"};
   //  auto childs = glTree.childNodes();
-  QDir outputDirectory{QDir::current()};
+  QDir outputDirectory{where};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
       qFatal("Colud not create directory:");
@@ -695,7 +700,7 @@ void Parser::outputEnumsClassHeaders()
 
               auto profileStr = profileValue.isEmpty() ? "" : '_' + profileValue;
               auto fileName = dir + '/' + apiValue + '/' + filePrefix + "_"
-                  + versionValue + profileStr + fileExt;
+                  + versionValue + profileStr + FILE_EXT;
 
               QFile file(fileName);
               if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))
@@ -740,13 +745,12 @@ void Parser::outputEnumsClassHeaders()
     }
 }
 
-void Parser::outputFunctionsHeaders()
+void Parser::outputFunctionsHeaders(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"functions"};
-  static const QString fileExt {".h"};
   //  auto childs = glTree.childNodes();
-  QDir outputDirectory{QDir::current()};
+  QDir outputDirectory{where};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
       qFatal("Colud not create directory:");
@@ -766,7 +770,7 @@ void Parser::outputFunctionsHeaders()
 
               auto profileStr = profileValue.isEmpty() ? "" : '_' + profileValue;
               auto fileName = dir + '/' + apiValue + '/' + filePrefix + "_"
-                  + versionValue + profileStr + fileExt;
+                  + versionValue + profileStr + FILE_EXT;
 
               QFile file(fileName);
               if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))
@@ -783,7 +787,7 @@ void Parser::outputFunctionsHeaders()
               functionOut << "#include \"types.h\"" << endl;
               if(m_useEnumClass)
                 functionOut << "#include \"enums_" << versionValue
-                            << profileStr << fileExt << "\"" << endl;
+                            << profileStr << FILE_EXT << "\"" << endl;
               functionOut << "\n";
               functionOut << "namespace gl" << endl;
               functionOut << '{' << endl;
@@ -855,13 +859,12 @@ void Parser::outputFunctionsHeaders()
     }
 }
 
-void Parser::outputGLHeaders()
+void Parser::outputGLHeaders(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"gl"};
-  static const QString fileExt {".h"};
   //  auto childs = glTree.childNodes();
-  QDir outputDirectory{QDir::current()};
+  QDir outputDirectory{where};
   if(!outputDirectory.mkdir(dir))
     if(!outputDirectory.exists(dir))
       qFatal("Colud not create directory:");
@@ -881,7 +884,7 @@ void Parser::outputGLHeaders()
 
               auto profileStr = profileValue.isEmpty() ? "" : '_' + profileValue;
               auto fileName = dir + '/' + apiValue + '/' + filePrefix + "_"
-                  + versionValue + profileStr + fileExt;
+                  + versionValue + profileStr + FILE_EXT;
 
               QFile file(fileName);
               if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))
@@ -896,9 +899,9 @@ void Parser::outputGLHeaders()
               glOut << "\n";
               glOut << "#include \"types.h\"" << endl;
               glOut << "#include \"enums_" << versionValue
-                                     << profileStr << fileExt << "\"" << endl;
+                                     << profileStr << FILE_EXT << "\"" << endl;
               glOut << "#include \"functions_" << versionValue
-                    << profileStr << fileExt << "\"" << endl;
+                    << profileStr << FILE_EXT << "\"" << endl;
 
               glOut << "#endif //GL_" + versionValue + "_" + profileStr
                           << endl;
@@ -908,9 +911,9 @@ void Parser::outputGLHeaders()
     }
 }
 
-void Parser::outputBindingsHeaders()
+void Parser::outputBindingsHeaders(const QString &where)
 {
-  static const QString dir {"../include"};
+  static const QString dir {"include"};
   static const QString filePrefix {"binds"};
   static const QString fileExt {".h"};
   //  auto childs = glTree.childNodes();
@@ -919,7 +922,7 @@ void Parser::outputBindingsHeaders()
   //    if(!outputDirectory.exists(dir))
   //      qFatal("Colud not create directory:");
 
-  auto fileName = dir + '/' + filePrefix + fileExt;
+  auto fileName = where + '/' + dir + '/' + filePrefix + FILE_EXT;
 
   QFile file(fileName);
   if(!file.open(QIODevice::WriteOnly| QIODevice::Truncate))

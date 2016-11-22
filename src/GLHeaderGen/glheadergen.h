@@ -48,10 +48,10 @@ namespace GLHeaderGen
     void setUseEnumClass(bool useEnumClass);
     void setUseDefines(bool useDefines);
 
-  public slots:
+  public:
     //  void read(QIODevice *device);
     void read(const char *buffer);//dom version
-
+    void write(const QString &where);
   private://options
     bool m_useEnumClass;
     bool m_useDefines;
@@ -63,12 +63,12 @@ namespace GLHeaderGen
 
     void resolveData(tinyxml2::XMLElement *feature);
 
-    void outputEnumUndefs();
-    void outputEnumsHeaders();
-    void outputEnumsClassHeaders();
-    void outputFunctionsHeaders();
-    void outputGLHeaders();
-    void outputBindingsHeaders();
+    void outputEnumUndefs(const QString &where);
+    void outputEnumsHeaders(const QString &where);
+    void outputEnumsClassHeaders(const QString &where);
+    void outputFunctionsHeaders(const QString &where);
+    void outputGLHeaders(const QString &where);
+    void outputBindingsHeaders(const QString &where);
 
   private:
     GLHeaderGen::GLTree<BaseGL> glTree;
