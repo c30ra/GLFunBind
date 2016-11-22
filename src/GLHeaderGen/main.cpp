@@ -1,4 +1,5 @@
 /*******************************************************************************
+/*******************************************************************************
 GLFunBind type safe header only OpenGL function binder.
 Copyright (C) 2016  Luca Carella
 
@@ -18,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //Qt
 #include <QCoreApplication>
 #include <QFile>
-#include <QDebug>
 
 //GLHeaderGen
 #include "glheadergen.h"
@@ -37,7 +37,7 @@ void showHelp()
       "\t-license: show license notice\n"
       "\t-abouts: show software information\n"
       "\t-help: show this help.\n";
-  qDebug() << help;
+  std::cout << help << '\n';
 
 }
 
@@ -59,23 +59,24 @@ void showLicense()
       "\n"
       "You should have received a copy of the GNU General Public License\n"
       "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
-  qDebug() << smallLicense;
+  std::cout << smallLicense << '\n';
 }
 
 void showAbouts()
 {
   static const auto abouts = "This software make use of TinyXML2 and Qt5.4\n";
-  qDebug() << abouts;
+  std::cout << abouts << '\n';
 }
 
 int main(int argc, char *argv[])
 {
   QCoreApplication a(argc, argv);
 
-  qDebug() << "GLHeaderGen Copyright (C) 2015  Luca Carella\n\n"
+  std::cout << "GLHeaderGen Copyright (C) 2015  Luca Carella\n\n"
               "This program comes with ABSOLUTELY NO WARRANTY.\n"
               "This is free software, and you are welcome to redistribute it\n"
-              "under certain conditions; for details type `-license'.\n\n";
+              "under certain conditions; for details type `-license'.\n\n" 
+			  << '\n';
 
   Parser parser;
   parser.setUseEnumClass(false);
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 
   if(wrongCommands)
     {
-      qDebug() << "Invalid argument...\n";
+      std::cout << "Invalid argument..." << '\n';
       showHelp();
       return 0;
     }
