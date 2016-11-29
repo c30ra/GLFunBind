@@ -32,7 +32,7 @@ namespace GLHeaderGen {
   class TreeNode
   {
   public:
-    TreeNode(const QString &key)
+    explicit TreeNode(const QString &key)
       : m_key{key} {}
 
     //! return the node associated at key;
